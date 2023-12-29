@@ -1,4 +1,4 @@
-
+```
 SequenceDiagram
   participant browser
   participant server
@@ -31,4 +31,5 @@ SequenceDiagram
   deactivate server
   
   Note right of browser: The browser executes the callback function that renders the notes
+```
 
