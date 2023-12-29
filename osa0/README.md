@@ -1,6 +1,6 @@
 Sequence Diagram when a user creates a new note and submits it on the page
 
-```ḿermaid
+```mermaid
 SequenceDiagram
   participant browser
   participant server
@@ -33,3 +33,4 @@ server-->browser: [{"content": "", "date": "2023-12-29T18:17:56.142Z"}, ...]
 deactivate server
 
 Note right of browser: The browser executes the callback function that renders the notes
+```
