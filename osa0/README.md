@@ -1,3 +1,4 @@
+Sequence Diagram for when a user submits a new note on the page
 ```mermaid
 sequenceDiagram
 participant browser
