@@ -1,8 +1,23 @@
 import { useState } from 'react'
 
 const Header = (props) => {
-  console.log(props)  
   return <h1>{props.text}</h1>
+}
+
+const StatisticLine = (props) => {
+  if (props.text == 'positive') {
+    return (
+      <div>
+        {props.text} {props.value} %
+      </div>
+    )
+  }
+  return (
+    <div>
+      {props.text} {props.value}
+    </div>
+  )
+
 }
 
 const Button = ({handleClick, text}) => (
@@ -12,33 +27,21 @@ const Button = ({handleClick, text}) => (
 )
 
 const Statistics = (props) => {
-  return (
-    <div>
-      {props.text} {props.value}
-    </div>
-  )
-}
-
-const Average = (props) => {
-  let result = 0
-  if (props.all != 0) {
-    result = props.value/props.all
+  if (props.all == 0) {
+    return (
+      <div>
+        No feedback given
+      </div>
+    )
   }
   return (
     <div>
-      {props.text} {result}
-    </div>
-  )
-}
-
-const Positive = (props) => {
-  let result = 0
-  if (props.all != 0) {
-    result = (props.value/props.all) * 100
-  }
-  return (
-    <div>
-      {props.text} {result} %
+      <StatisticLine text='good' value={props.good}/>
+      <StatisticLine text='neutral' value={props.neutral}/>
+      <StatisticLine text='bad' value={props.bad}/>
+      <StatisticLine text='all' value={props.all}/>
+      <StatisticLine text='average' value={props.avg/props.all}/>
+      <StatisticLine text='positive' value={(props.good/props.all)*100}/>
     </div>
   )
 }
@@ -74,12 +77,7 @@ const App = () => {
       <Button handleClick={handleNeutralClick} text='neutral' />
       <Button handleClick={handleBadClick} text='bad' />
       <Header text='statistics' />
-      <Statistics text='good' value={good} />
-      <Statistics text='neutral' value={neutral} />
-      <Statistics text='bad' value={bad} />
-      <Statistics text='all' value={allClicks} />
-      <Average text='average' value={average} all={allClicks} />
-      <Positive text='positive' value={good} all={allClicks}/>
+      <Statistics good={good} neutral={neutral} bad={bad} all={allClicks} avg={average} pos={good}/>
     </div>
   )
 }
