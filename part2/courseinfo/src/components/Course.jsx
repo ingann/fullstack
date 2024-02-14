@@ -7,7 +7,7 @@ const Part = ({ part, exercises}) => {
 }
 
 const Course = ({ course }) => {
-    const total = course.parts.reduce(function(sum, part) {
+    const total = course.parts.reduce((sum, part) => {
         return sum + part.exercises
     }, 0)
   return (
