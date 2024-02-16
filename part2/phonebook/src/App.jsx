@@ -3,11 +3,9 @@ import Person from './components/Person'
 import AddPerson from './components/PersonForm'
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas'},
-    { name: 'Ada Lovelace'}
-  ])
+  const [persons, setPersons] = useState([])
   const [newName, setnewName] = useState('')
+  const [newNumber, setNewNumber] = useState('')
 
   const addPerson = (event) => {
     event.preventDefault()
@@ -17,26 +15,35 @@ const App = () => {
     }
     else {
       const person = {
-        name: newName
+        name: newName,
+        number: newNumber,
+        id: persons.length + 1
       }
       setPersons(persons.concat(person))
-      setnewName('')
     }
+    setnewName('')
+    setNewNumber('')
   }
 
-  const handleBookChange = (event) => {
+  const handleNameChange = (event) => {
     setnewName(event.target.value)
+  }
+
+  const handleNumberChange = (event) => {
+    setNewNumber(event.target.value)
   }
 
   return (
     <div>
       <h2>Phonebook</h2>
-      <AddPerson addPerson={addPerson} newName={newName} handleBookChange={handleBookChange}/>
+      <AddPerson addPerson={addPerson} newName={newName} newNumber={newNumber} handleNameChange={handleNameChange}
+      handleNumberChange={handleNumberChange}/>
       <h2>Numbers</h2>
-      <div>{persons.map(person =>
-        <Person key={person.name} name={person.name}/>
+      <table>
+        {persons.map(person =>
+        <Person key={person.id} name={person.name} number={person.number}/>
         )}
-      </div>
+      </table>
     </div>
   )
 }
