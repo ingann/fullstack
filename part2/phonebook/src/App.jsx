@@ -13,6 +13,7 @@ const App = () => {
   const [newName, setnewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [search, setNewSearch] = useState('')
+  const [showFiltered, setShowFiltered] = useState([])
 
   const addPerson = (event) => {
     event.preventDefault()
@@ -41,18 +42,20 @@ const App = () => {
   }
 
   const handleSearchChange = (event) => {
-    setNewSearch(event.target.value)
+    const result = event.target.value.toLowerCase()
+    setNewSearch(result)
+    setShowFiltered(persons.filter(person => person.name.toLowerCase().includes(result)))
   }
 
   return (
     <div>
       <h2>Phonebook</h2>
-      <Filter persons={persons} search={search} handleSearchChange={handleSearchChange}/>
+      <Filter search={search} handleSearchChange={handleSearchChange}/>
       <h3>add a new</h3>
       <AddPerson addPerson={addPerson} newName={newName} newNumber={newNumber} handleNameChange={handleNameChange}
       handleNumberChange={handleNumberChange}/>
       <h3>Numbers</h3>
-      <Display persons={persons}/>
+      <Display persons={showFiltered.length === 0 ? persons: showFiltered}/>
     </div>
   )
 }

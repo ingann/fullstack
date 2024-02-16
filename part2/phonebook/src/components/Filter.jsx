@@ -1,5 +1,4 @@
-const Filter = ({ persons, search, handleSearchChange }) => {
-
+const Filter = ({ search, handleSearchChange }) => {
     return (
         <div>
             filter shown with <input
@@ -7,6 +6,7 @@ const Filter = ({ persons, search, handleSearchChange }) => {
             onChange={handleSearchChange}
             />
         </div>
+
     )
 }
 
