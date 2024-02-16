@@ -1,11 +1,18 @@
 import { useState } from 'react'
-import Person from './components/Person'
 import AddPerson from './components/PersonForm'
+import Display from './components/Persons'
+import Filter from './components/Filter'
 
 const App = () => {
-  const [persons, setPersons] = useState([])
+  const [persons, setPersons] = useState([
+    { name: 'Arto Hellas', number: '040-123456', id: 1 },
+    { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
+    { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
+    { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
+  ])
   const [newName, setnewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
+  const [search, setNewSearch] = useState('')
 
   const addPerson = (event) => {
     event.preventDefault()
@@ -33,17 +40,19 @@ const App = () => {
     setNewNumber(event.target.value)
   }
 
+  const handleSearchChange = (event) => {
+    setNewSearch(event.target.value)
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
+      <Filter persons={persons} search={search} handleSearchChange={handleSearchChange}/>
+      <h3>add a new</h3>
       <AddPerson addPerson={addPerson} newName={newName} newNumber={newNumber} handleNameChange={handleNameChange}
       handleNumberChange={handleNumberChange}/>
-      <h2>Numbers</h2>
-      <table>
-        {persons.map(person =>
-        <Person key={person.id} name={person.name} number={person.number}/>
-        )}
-      </table>
+      <h3>Numbers</h3>
+      <Display persons={persons}/>
     </div>
   )
 }
