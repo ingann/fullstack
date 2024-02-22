@@ -26,7 +26,22 @@ const App = () => {
     event.preventDefault()
     const exist = persons.filter(person => person.name.toLowerCase() === newName.toLowerCase())
     if (exist.length !== 0) {
-      window.alert(`${newName} is already added to phonebook`)
+      if (window.confirm(`${newName} is already added to phonebook,
+      replace the old number with a new one?`)) {
+        const personObject = {
+          name: newName,
+          number: newNumber
+        }
+        personService
+          .update(exist[0].id, personObject)
+          .then(updatedPerson => {
+            setPersons(persons.map(person => person.id !== updatedPerson.id ?
+              person : updatedPerson))
+          })
+          .catch(error => {
+            alert(`fail`)
+          })
+      }
     }
     else {
       const person = {
