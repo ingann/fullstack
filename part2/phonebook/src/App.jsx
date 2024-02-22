@@ -17,11 +17,14 @@ const App = () => {
       .then(initialPersons => {
         setPersons(initialPersons)
       })
+      .catch(error => {
+        alert(`fail`)
+      })
   }, [])
 
   const addPerson = (event) => {
     event.preventDefault()
-    const exist = persons.filter(person => person.name === newName)
+    const exist = persons.filter(person => person.name.toLowerCase() === newName.toLowerCase())
     if (exist.length !== 0) {
       window.alert(`${newName} is already added to phonebook`)
     }
@@ -36,8 +39,25 @@ const App = () => {
         .then(returnedPerson => {
           setPersons(persons.concat(returnedPerson))
         })
+        .catch(error => {
+          alert(`fail`)
+        })
     setnewName('')
     setNewNumber('')
+    }
+  }
+
+  const removePerson = (personId, name) => {
+    if (window.confirm(`Delete ${name} ?`)) {
+      personService
+        .remove(personId)
+        .then(() => {
+          const newPersons = persons.filter(person => person.id !== personId)
+          setPersons(newPersons)
+        })
+        .catch(error => {
+          alert(`fail`)
+        })
     }
   }
 
@@ -63,7 +83,7 @@ const App = () => {
       <PersonForm addPerson={addPerson} newName={newName} newNumber={newNumber} handleNameChange={handleNameChange}
       handleNumberChange={handleNumberChange}/>
       <h3>Numbers</h3>
-      <Display persons={showFiltered.length === 0 ? persons: showFiltered}/>
+      <Display persons={showFiltered.length === 0 ? persons: showFiltered} removePerson={removePerson}/>
     </div>
   )
 }
