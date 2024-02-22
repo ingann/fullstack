@@ -3,6 +3,8 @@ import PersonForm from './components/PersonForm'
 import Display from './components/Persons'
 import Filter from './components/Filter'
 import personService from './services/persons'
+import Notification from './components/Notification'
+import './index.css'
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -10,6 +12,8 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [search, setNewSearch] = useState('')
   const [showFiltered, setShowFiltered] = useState([])
+  const [notification, setNotification] = useState(null)
+  const [notificationType, setNewType] = useState('')
 
   useEffect(() => {
     personService
@@ -17,10 +21,14 @@ const App = () => {
       .then(initialPersons => {
         setPersons(initialPersons)
       })
-      .catch(error => {
-        alert(`fail`)
-      })
   }, [])
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setNotification(null)
+    }, 2000)
+    return() => {clearTimeout(timeout)}
+  }, [notification])
 
   const addPerson = (event) => {
     event.preventDefault()
@@ -37,6 +45,8 @@ const App = () => {
           .then(updatedPerson => {
             setPersons(persons.map(person => person.id !== updatedPerson.id ?
               person : updatedPerson))
+            setNotification(`Updated ${newName}'s number`)
+            setNewType('success')
           })
           .catch(error => {
             alert(`fail`)
@@ -53,6 +63,8 @@ const App = () => {
         .create(person)
         .then(returnedPerson => {
           setPersons(persons.concat(returnedPerson))
+          setNotification(`Added ${newName} to phonebook`)
+          setNewType('success')
         })
         .catch(error => {
           alert(`fail`)
@@ -93,6 +105,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={notification} type={notificationType}/>
       <Filter search={search} handleSearchChange={handleSearchChange}/>
       <h3>add a new</h3>
       <PersonForm addPerson={addPerson} newName={newName} newNumber={newNumber} handleNameChange={handleNameChange}
