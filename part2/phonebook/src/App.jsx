@@ -69,6 +69,7 @@ const App = () => {
         })
         .catch(error => {
           setNotification(`error`)
+          setNewType('error')
         })
     setnewName('')
     setNewNumber('')
@@ -85,6 +86,7 @@ const App = () => {
         })
         .catch(error => {
           setNotification(`error`)
+          setNewType('error')
         })
     }
   }
