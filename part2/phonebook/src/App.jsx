@@ -49,7 +49,8 @@ const App = () => {
             setNewType('success')
           })
           .catch(error => {
-            alert(`fail`)
+            setNotification(`Information of ${newName} has already been removed from server`)
+            setNewType('error')
           })
       }
     }
@@ -67,7 +68,7 @@ const App = () => {
           setNewType('success')
         })
         .catch(error => {
-          alert(`fail`)
+          setNotification(`error`)
         })
     setnewName('')
     setNewNumber('')
@@ -83,7 +84,7 @@ const App = () => {
           setPersons(newPersons)
         })
         .catch(error => {
-          alert(`fail`)
+          setNotification(`error`)
         })
     }
   }
