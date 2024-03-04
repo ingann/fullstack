@@ -14,11 +14,10 @@ const App = () => {
         .then(response => {
           setCountries(response.data)
         })
+        .catch(error => {
+          console.error(`Error fetching data: ${error}`)
+        })
   }, [])
-
-  const handleChange = (event) => {
-    setCountry(event.target.value)
-  }
 
   const onSearch = (event) => {
     const search = event.target.value.toLowerCase()
@@ -28,8 +27,8 @@ const App = () => {
 
   return (
     <div>
-      <Filter search={country} handleChange={handleChange}/>
-      <Display countries={countries}/>
+      <Filter search={country} handleChange={onSearch}/>
+      <Display countries={showFiltered.length === 0 ? countries: showFiltered}/>
     </div>
   )
 }
