@@ -1,3 +1,5 @@
+import Weather from './Weather'
+
 const Country = ( {country, length, setShowFiltered}) => {
     if (length > 1) {
         return (
@@ -8,7 +10,7 @@ const Country = ( {country, length, setShowFiltered}) => {
         )
     }
     const officialLangs = Object.values(country.languages)
-    
+
     return (
         <div>
             <h1>{country.name.common}</h1>
@@ -21,6 +23,7 @@ const Country = ( {country, length, setShowFiltered}) => {
                 ))}
             </ul>
             <img src={country.flags.png} alt={`${country.name.common}'s flag`}/>
+            <Weather capital={country.capital}/>
         </div>
     )
 }
