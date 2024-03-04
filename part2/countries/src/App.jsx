@@ -28,7 +28,7 @@ const App = () => {
   return (
     <div>
       <Filter search={country} handleChange={onSearch}/>
-      <Display countries={showFiltered.length === 0 ? countries: showFiltered}/>
+      <Display countries={showFiltered.length === 0 ? countries: showFiltered} setShowFiltered={setShowFiltered}/>
     </div>
   )
 }

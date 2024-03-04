@@ -1,10 +1,14 @@
-const Country = ( {country, length}) => {
+const Country = ( {country, length, setShowFiltered}) => {
     if (length > 1) {
         return (
-            <p>{country.name.common}</p>
+            <div>
+                <p>{country.name.common} <button onClick={() => setShowFiltered([country])}>show</button></p>
+            </div>
+            
         )
     }
     const officialLangs = Object.values(country.languages)
+    
     return (
         <div>
             <h1>{country.name.common}</h1>
