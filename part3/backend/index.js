@@ -1,19 +1,15 @@
 const express = require('express')
+const app = express()
 const morgan = require('morgan')
 const cors = require('cors')
 
-const app = express()
-app.use(express.json())
 app.use(cors())
-
+app.use(express.static('dist'))
 
 morgan.token('req-body', (req, res) => {
   return JSON.stringify(req.body)
-});
+})
 const morganConfig = morgan(':method :url :status :res[content-length] - :response-time ms :req-body')
-app.use(morganConfig)
-
-app.use(express.static('dist'))
 
 let persons = [
     { 
@@ -32,6 +28,9 @@ let persons = [
       "number": "12-43-234345"
     }
 ]
+
+app.use(express.json())
+app.use(morganConfig)
 
 app.get('/', (req, res) => {
   res.send('<h1>Welcome to my app!</h1>')
