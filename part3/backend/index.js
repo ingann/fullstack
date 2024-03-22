@@ -13,24 +13,6 @@ morgan.token('req-body', (req, res) => {
 })
 const morganConfig = morgan(':method :url :status :res[content-length] - :response-time ms :req-body')
 
-let persons = [
-    { 
-      "id": 1,
-      "name": "Arto Hellas", 
-      "number": "040-123456"
-    },
-    { 
-      "id": 2,
-      "name": "Ada Lovelace", 
-      "number": "39-44-5323523"
-    },
-    { 
-      "id": 3,
-      "name": "Dan Abramov", 
-      "number": "12-43-234345"
-    }
-]
-
 app.use(express.json())
 app.use(morganConfig)
 
