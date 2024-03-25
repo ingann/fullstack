@@ -23,8 +23,25 @@ mongoose.connect(url)
       minLength: 3,
       required: true
     },
-    number: String,
-  })
+    number: {
+      type: String,
+      validate: [
+        {
+        validator: vNumber => {
+          return (vNumber.length >= 8 && (vNumber[2] === '-' || vNumber[3] === '-'))
+        },
+        message: `Must have eight or more digits`
+      },
+      {
+        validator: vNumber => {
+          return /^\d{2,3}-\d+$/.test(vNumber)
+        },
+        message: `Invalid number. Number must consist only digits after the hyphen.`
+      }
+    ],
+    required: true
+  }
+})
 
 personSchema.set('toJSON', {
   transform: (document, returnedObject) => {

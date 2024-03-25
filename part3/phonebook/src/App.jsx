@@ -49,7 +49,7 @@ const App = () => {
             setNewType('success')
           })
           .catch(error => {
-            setNotification(`Information of ${newName} has already been removed from server`)
+            setNotification(error.response.data.error)
             setNewType('error')
           })
       }
