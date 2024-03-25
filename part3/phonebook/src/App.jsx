@@ -68,7 +68,7 @@ const App = () => {
           setNewType('success')
         })
         .catch(error => {
-          setNotification(`error`)
+          setNotification(error.response.data.error)
           setNewType('error')
         })
     setnewName('')
