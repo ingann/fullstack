@@ -10,33 +10,33 @@ console.log('connecting to', url)
 
 mongoose.connect(url)
 
-  .then(result => {
+  .then(() => {
     console.log('connected to MongoDB')
   })
   .catch(error => {
     console.log('error connecting to MongoDB:', error.message)
   })
 
-  const personSchema = new mongoose.Schema({
-    name: {
-      type: String,
-      minLength: 3,
-      required: true
-    },
-    number: {
-      type: String,
-      validate: [
-        {
+const personSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    minLength: 3,
+    required: true
+  },
+  number: {
+    type: String,
+    validate: [
+      {
         validator: vNumber => {
           return (vNumber.length >= 8 && (vNumber[2] === '-' || vNumber[3] === '-'))
         },
-        message: `Must have eight or more digits`
+        message: 'Must have eight or more digits'
       },
       {
         validator: vNumber => {
           return /^\d{2,3}-\d+$/.test(vNumber)
         },
-        message: `Invalid number. Number must consist only digits after the hyphen.`
+        message: 'Invalid number. Number must consist only digits after the hyphen.'
       }
     ],
     required: true

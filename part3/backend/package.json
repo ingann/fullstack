@@ -10,7 +10,8 @@
     "build:ui": "rm -rf dist && cd ../phonebook/ && npm run build && cp -r dist ../backend",
     "deploy": "flyctl deploy",
     "deploy:full": "npm run build:ui && npm run deploy",
-    "logs:prod": "flyctl logs"
+    "logs:prod": "flyctl logs",
+    "lint": "eslint ."
   },
   "author": "Inka Niinisalo",
   "license": "MIT",
@@ -23,6 +24,8 @@
   },
   "devDependencies": {
     "@flydotio/dockerfile": "^0.5.3",
+    "@stylistic/eslint-plugin-js": "^1.7.0",
+    "eslint": "^8.57.0",
     "nodemon": "^3.1.0"
   }
 }
