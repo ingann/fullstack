@@ -133,13 +133,41 @@ describe('Most blogs', () => {
     assert.deepStrictEqual(result, onlyOne)
   })
 
-  test('when list is not empty, returns the author with most blogs', () => {
+  test('when list is bigger, returns the author with most blogs', () => {
     const result = listHelper.mostBlogs(blogs)
     assert.deepStrictEqual(result, mostBlogsAuth)
   })
 
   test('of empty list is null', () => {
     const result = listHelper.mostBlogs([])
+    assert.deepStrictEqual(result, null)
+  })
+})
+
+describe('Most likes', () => {
+
+  const mostLikesAuth = {
+    author: "Edsger W. Dijkstra",
+    likes: 17
+  }
+
+  const onlyOne = {
+    author: 'Edsger W. Dijkstra',
+    likes: 5
+  }
+
+  test('when list has only one blog, returns that one author', () => {
+    const result = listHelper.mostLikes(listWithOneBlog)
+    assert.deepStrictEqual(result, onlyOne)
+  })
+
+  test('when list is bigger, returns the author with most likes', () => {
+    const result = listHelper.mostLikes(blogs)
+    assert.deepStrictEqual(result, mostLikesAuth)
+  })
+
+  test('of empty list is null', () => {
+    const result = listHelper.mostLikes([])
     assert.deepStrictEqual(result, null)
   })
 })
