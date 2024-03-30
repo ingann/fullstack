@@ -12,7 +12,7 @@ blogsRouter.get('/', async (request, response) => {
       title: body.title,
       author: body.author,
       url: body.url,
-      likes: body.likes
+      likes: body.likes !== undefined ? body.likes: 0
     })
   
     const savedBlog = await blog.save()

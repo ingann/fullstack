@@ -7,7 +7,6 @@ const helper = require('./test_helper')
 const api = supertest(app)
 const Blog = require('../models/blog')
 
-
 beforeEach(async () => {
   await Blog.deleteMany({})
   let blogObject = new Blog(helper.initialBlogs[0])
@@ -47,13 +46,14 @@ test('there are two blogs', async () => {
   })
   
   test('a valid blog can be added ', async () => {
+
     const newBlog = {
         title: "TDD harms architecture",
         author: "Robert C. Martin",
         url: "http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html",
         likes: 0
       }
-  
+    
     await api
       .post('/api/blogs')
       .send(newBlog)
@@ -65,6 +65,28 @@ test('there are two blogs', async () => {
   
     const createdBlog = blogsAtEnd.find(b => b.title === newBlog.title)
     assert.deepStrictEqual(createdBlog, {...newBlog, id: createdBlog.id})
+  })
+
+  test('likes property defaults to 0 if missing', async () => {
+
+    const newBlog = {
+        title: "TDD harms architecture",
+        author: "Robert C. Martin",
+        url: "http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html"
+      }
+    
+    await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
+
+        const res = await api.get('/api/blogs')
+        const blogs = res.body
+
+        const createdBlog = blogs.find(blog => blog.title === newBlog.title)
+
+        assert.strictEqual(createdBlog.likes, 0)
   })
 
 after(async () => {
