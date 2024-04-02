@@ -141,6 +141,24 @@ describe('addition of a new blog', () => {
     })
   })
 
+  describe('updating a blog', () => {
+    test('updating likes of a blog post', async() => {
+    const blogsAtStart = await helper.blogsInDb()
+    const blogToUpdate = blogsAtStart[0]
+
+    const updatedBlog = {...blogToUpdate, likes: blogToUpdate.likes + 1}
+
+    await api
+        .put(`/api/blogs/${blogToUpdate.id}`)
+        .send(updatedBlog)
+        .expect(200)
+
+    const blogsAtEnd = await helper.blogsInDb()
+    const updatedBlogInDb = blogsAtEnd.find(b => b.id === blogToUpdate.id)
+    assert.strictEqual(updatedBlogInDb.likes, blogToUpdate.likes + 1)
+    })
+  })
+
 after(async () => {
   await mongoose.connection.close()
 })
