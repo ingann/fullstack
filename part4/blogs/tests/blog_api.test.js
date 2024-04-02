@@ -1,4 +1,4 @@
-const { test, after, beforeEach } = require('node:test')
+const { test, after, beforeEach, describe } = require('node:test')
 const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
@@ -15,7 +15,7 @@ beforeEach(async () => {
   await blogObject.save()
 })
 
-
+describe('when there are initially some blogs saved', () => {
 test('blogs are returned as json', async () => {
   await api
     .get('/api/blogs')
@@ -25,7 +25,6 @@ test('blogs are returned as json', async () => {
 
 test('all blogs are returned', async () => {
     const response = await api.get('/api/blogs')
-    console.log(response.body)
     assert.strictEqual(response.body.length, helper.initialBlogs.length)
 })
 
@@ -34,7 +33,9 @@ test('there are two blogs', async () => {
   
     assert.strictEqual(response.body.length, helper.initialBlogs.length)
   })
+})
 
+describe ('blog obejct has correct namings', () => {
   test('blog identifier is named as id instead of _id', async () => {
     const response = await api.get('/api/blogs')
     const blogs = response.body
@@ -44,7 +45,9 @@ test('there are two blogs', async () => {
         assert.strictEqual(blog._id, undefined)
     })
   })
+})
   
+describe('addition of a new blog', () => {
   test('a valid blog can be added ', async () => {
 
     const newBlog = {
@@ -119,6 +122,23 @@ test('there are two blogs', async () => {
 
     const blogsAtEnd = await helper.blogsInDb()
     assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
+  })
+})
+
+  describe('deletion of a blog', () => {
+    test('succeeds with status code 204 if id is valid', async () => {
+        const blogsAtStart = await helper.blogsInDb()
+        const blogToDelete = blogsAtStart[0]
+
+        await api
+            .delete(`/api/blogs/${blogToDelete.id}`)
+            .expect(204)
+        const blogsAtEnd = await helper.blogsInDb()
+        assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length - 1)
+
+        const titles = blogsAtEnd.map(r => r.title)
+        assert(!titles.includes(blogToDelete.title))
+    })
   })
 
 after(async () => {
