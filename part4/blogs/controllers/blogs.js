@@ -23,7 +23,7 @@ blogsRouter.get('/', async (request, response) => {
       author: body.author,
       url: body.url,
       likes: body.likes !== undefined ? body.likes: 0,
-      user: user._id
+      user: user.id
     })
   
     const savedBlog = await blog.save()
@@ -32,11 +32,11 @@ blogsRouter.get('/', async (request, response) => {
     response.status(201).json(savedBlog)
   })
 
-blogsRouter.delete('/:id', async (request, response) => {
+blogsRouter.delete('/:id', middleware.userExtractor, async (request, response) => {
   const token = request.token
   const user = request.user
 
-  if (!(token && user._id)) {
+  if (!(token && user.id)) {
     return response.status(401).json({ error: "token missing or invalid" });
   }
 

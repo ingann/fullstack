@@ -50,27 +50,45 @@ describe ('blog obejct has correct namings', () => {
 })
   
 describe('addition of a new blog', () => {
-  test('a valid blog can be added ', async () => {
-
-    const newBlog = {
-        title: "TDD harms architecture",
-        author: "Robert C. Martin",
-        url: "http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html",
-        likes: 0
-      }
+    let token = ''
+    let userId = ''
+    beforeEach(async () => {
+        await User.deleteMany({})
+        const newUser = {
+            username: "apitesting",
+            password: "secret"
+        }
+        const userResponse = await api.post('/api/users').send(newUser)
+        userId = userResponse.body.id
+        const loginResponse = await api
+          .post('/api/login')
+          .send({ username: newUser.username, password: newUser.password })
+      
+        token = loginResponse.body.token
+    })
     
-    await api
-      .post('/api/blogs')
-      .send(newBlog)
-      .expect(201)
-      .expect('Content-Type', /application\/json/)
-
-      const blogsAtEnd = await helper.blogsInDb()
-      assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length + 1)
-  
-    const createdBlog = blogsAtEnd.find(b => b.title === newBlog.title)
-    assert.deepStrictEqual(createdBlog, {...newBlog, id: createdBlog.id})
-  })
+    test('a valid blog can be added with token', async () => {
+        const newBlog = {
+          title: "TDD harms architecture",
+          author: "Robert C. Martin",
+          url: "http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html",
+          likes: 0
+        }
+      
+        await api
+          .post('/api/blogs')
+          .set('Authorization', `Bearer ${token}`)
+          .send(newBlog)
+          .expect(201)
+          .expect('Content-Type', /application\/json/)
+      
+        const blogsAtEnd = await helper.blogsInDb()
+        assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length + 1)
+      
+        const createdBlog = blogsAtEnd.find(b => b.title === newBlog.title)
+        assert.deepStrictEqual(createdBlog.user.toString(), userId)
+        assert.deepStrictEqual(createdBlog.title, newBlog.title)
+      })
 
   test('likes property defaults to 0 if missing', async () => {
 
@@ -82,6 +100,7 @@ describe('addition of a new blog', () => {
     
     await api
         .post('/api/blogs')
+        .set('Authorization', `Bearer ${token}`)
         .send(newBlog)
         .expect(201)
         .expect('Content-Type', /application\/json/)
@@ -103,6 +122,7 @@ describe('addition of a new blog', () => {
   
     await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
       .send(newBlog)
       .expect(400)
 
@@ -119,6 +139,7 @@ describe('addition of a new blog', () => {
   
     await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
       .send(newBlog)
       .expect(400)
 
@@ -127,21 +148,77 @@ describe('addition of a new blog', () => {
   })
 })
 
-  describe('deletion of a blog', () => {
-    test('succeeds with status code 204 if id is valid', async () => {
+describe('deletion of a blog', () => {
+    let token = ''
+    let userId = ''
+    let blogToDelete = null
+
+    beforeEach(async () => {
+        await User.deleteMany({})
+        await Blog.deleteMany({})
+
+        const newUser = {
+            username: "apitesting",
+            password: "secret"
+        }
+        const userResponse = await api.post('/api/users').send(newUser)
+        userId = userResponse.body.id
+
+        const loginResponse = await api
+            .post('/api/login')
+            .send({ username: newUser.username, password: newUser.password })
+
+        token = loginResponse.body.token
+
+        const newBlog = {
+            title: "Test Blog",
+            author: "Test Author",
+            url: "http://example.com",
+            likes: 0
+        }
+
+        const createBlogResponse = await api
+            .post('/api/blogs')
+            .set('Authorization', `Bearer ${token}`)
+            .send(newBlog)
+
+        blogToDelete = createBlogResponse.body
+    })
+
+    test('succeeds with status code 204 if id is valid and user is authorized', async () => {
         const blogsAtStart = await helper.blogsInDb()
-        const blogToDelete = blogsAtStart[0]
 
         await api
             .delete(`/api/blogs/${blogToDelete.id}`)
+            .set('Authorization', `Bearer ${token}`)
             .expect(204)
-        const blogsAtEnd = await helper.blogsInDb()
-        assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length - 1)
 
-        const titles = blogsAtEnd.map(r => r.title)
-        assert(!titles.includes(blogToDelete.title))
+            const blogsAtEnd = await helper.blogsInDb()
+            assert.strictEqual(blogsAtEnd.length, 0)
+    
+            const titles = blogsAtEnd.map(r => r.title)
+            assert(!titles.includes(blogToDelete.title))
     })
-  })
+
+    test('fails with status code 401 if user is not authorized to delete the blog', async () => {
+        const anotherUser = {
+            username: "anotheruser",
+            password: "password"
+        }
+        await api.post('/api/users').send(anotherUser)
+
+        const anotherUserLoginResponse = await api
+            .post('/api/login')
+            .send({ username: anotherUser.username, password: anotherUser.password })
+
+        const anotherUserToken = anotherUserLoginResponse.body.token
+
+        await api
+            .delete(`/api/blogs/${blogToDelete.id}`)
+            .set('Authorization', `Bearer ${anotherUserToken}`)
+            .expect(403)
+    })
+})
 
   describe('updating a blog', () => {
     test('updating likes of a blog post', async() => {
