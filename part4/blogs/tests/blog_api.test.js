@@ -196,7 +196,6 @@ describe('addition of a new blog', () => {
   
     test('creation fails with proper statuscode and message if username already taken', async () => {
       const usersAtStart = await helper.usersInDb()
-      console.log(usersAtStart)
       
       const newUser = {
         username: 'matti',
@@ -211,9 +210,80 @@ describe('addition of a new blog', () => {
         .expect('Content-Type', /application\/json/)
   
       const usersAtEnd = await helper.usersInDb()
-      console.log(usersAtEnd)
   
       assert(result.body.error.includes('expected `username` to be unique'))
+  
+      assert.strictEqual(usersAtEnd.length, usersAtStart.length)
+    })
+
+    test('creation fails with proper statuscode and message if password is too short', async () => {
+
+        const usersAtStart = await helper.usersInDb()
+      const newUser = {
+        username: 'testperson',
+        name: 'Superuser',
+        password: '',
+      }
+  
+      const result = await api
+        .post('/api/users')
+        .send(newUser)
+        .expect(400)
+        .expect('Content-Type', /application\/json/)
+  
+      const usersAtEnd = await helper.usersInDb()
+  
+      assert(result.body.error.includes('Password and username must be at least three characters long'))
+  
+      assert.strictEqual(usersAtEnd.length, usersAtStart.length)
+    })
+
+    test('creation fails with proper statuscode and message if username is too short', async () => {
+
+        const usersAtStart = await helper.usersInDb()
+      const newUser = {
+        username: '',
+        name: 'Superuser',
+        password: 'secret',
+      }
+  
+      const result = await api
+        .post('/api/users')
+        .send(newUser)
+        .expect(400)
+        .expect('Content-Type', /application\/json/)
+  
+      const usersAtEnd = await helper.usersInDb()
+      console.log(result.body.error)
+  
+      const errorMessage = result.body.error
+      const expectedError = newUser.username ? 'is shorter than the minimum allowed length' : 'Path `username` is required'
+      
+      assert(errorMessage.includes(expectedError))
+  
+      assert.strictEqual(usersAtEnd.length, usersAtStart.length)
+    })
+
+    test('creation fails with proper statuscode and message if username and password are too short', async () => {
+
+        const usersAtStart = await helper.usersInDb()
+      const newUser = {
+        username: 'te',
+        name: 'Superuser',
+        password: 'se',
+      }
+  
+      const result = await api
+        .post('/api/users')
+        .send(newUser)
+        .expect(400)
+        .expect('Content-Type', /application\/json/)
+  
+      const usersAtEnd = await helper.usersInDb()
+      console.log(usersAtEnd)
+  
+      console.log(result.body.error)
+      assert(result.body.error.includes('Password and username must be at least three characters long'))
   
       assert.strictEqual(usersAtEnd.length, usersAtStart.length)
     })
