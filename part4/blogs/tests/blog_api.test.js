@@ -186,7 +186,6 @@ describe('deletion of a blog', () => {
     })
 
     test('succeeds with status code 204 if id is valid and user is authorized', async () => {
-        const blogsAtStart = await helper.blogsInDb()
 
         await api
             .delete(`/api/blogs/${blogToDelete.id}`)
