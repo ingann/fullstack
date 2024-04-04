@@ -11,11 +11,11 @@ const requestLogger = (request, response, next) => {
   next()
 }
 
-const unknownEndpoint = (response) => {
+const unknownEndpoint = (request, response) => {
   response.status(404).send({ error: 'unknown endpoint' })
 }
 
-const tokenExtractor = (request, next) => {
+const tokenExtractor = (request, response, next) => {
   const authorization = request.get('authorization')  
   if (authorization && authorization.startsWith('Bearer ')) 
   {    
@@ -43,7 +43,7 @@ const userExtractor = async (request, response, next) => {
     return response.status(401).json({ error: 'user not found' })
   }
 
-  request.user = user
+  request.user = user;
 
   next()
 }
