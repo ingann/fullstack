@@ -200,7 +200,7 @@ describe('deletion of a blog', () => {
             assert(!titles.includes(blogToDelete.title))
     })
 
-    test('fails with status code 401 if user is not authorized to delete the blog', async () => {
+    test('fails with status code 403 if user is not authorized to delete the blog', async () => {
         const anotherUser = {
             username: "anotheruser",
             password: "password"
