@@ -27,7 +27,7 @@ const tokenExtractor = (request, response, next) => {
 }
 
 const userExtractor = async (request, response, next) => {
-  const token = request.token;
+  const token = request.token
   
   if (!token) {
     return response.status(401).json({ error: 'token missing' })
@@ -43,7 +43,7 @@ const userExtractor = async (request, response, next) => {
     return response.status(401).json({ error: 'user not found' })
   }
 
-  request.user = user;
+  request.user = user
 
   next()
 }
