@@ -1,6 +1,7 @@
 const blogsRouter = require('express').Router()
 const { request } = require('../app')
 const Blog = require('../models/blog')
+const middleware = require('../utils/middleware')
 
 blogsRouter.get('/', async (request, response) => {
     const blogs = await Blog
@@ -8,9 +9,14 @@ blogsRouter.get('/', async (request, response) => {
     response.json(blogs)
   })
 
-  blogsRouter.post('/', async (request, response, next) => {
+  blogsRouter.post('/', middleware.userExtractor, async (request, response, next) => {
     const body = request.body
     const user = request.user
+    const token = request.token
+
+  if (!(token && user._id)) {
+    return response.status(401).json({ error: "token missing or invalid" });
+  }
 
     const blog = new Blog({
       title: body.title,
@@ -27,7 +33,13 @@ blogsRouter.get('/', async (request, response) => {
   })
 
 blogsRouter.delete('/:id', async (request, response) => {
+  const token = request.token
   const user = request.user
+
+  if (!(token && user._id)) {
+    return response.status(401).json({ error: "token missing or invalid" });
+  }
+
   const blog = await Blog.findById(request.params.id)
   if (blog.user.toString() !== user._id.toString()) {
     return response.status(403).json({ error: 'not authorized to delete this blog' });
