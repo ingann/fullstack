@@ -42,7 +42,7 @@ describe ('blog obejct has correct namings', () => {
     const response = await api.get('/api/blogs')
     const blogs = response.body
 
-    const validIds = blogs.map(blog => {
+    blogs.map(blog => {
         assert.ok(blog.id)
         assert.strictEqual(blog._id, undefined)
     })
@@ -150,7 +150,6 @@ describe('addition of a new blog', () => {
 
 describe('deletion of a blog', () => {
     let token = ''
-    let userId = ''
     let blogToDelete = null
 
     beforeEach(async () => {
@@ -161,8 +160,7 @@ describe('deletion of a blog', () => {
             username: "apitesting",
             password: "secret"
         }
-        const userResponse = await api.post('/api/users').send(newUser)
-        userId = userResponse.body.id
+        await api.post('/api/users').send(newUser)
 
         const loginResponse = await api
             .post('/api/login')
@@ -177,12 +175,12 @@ describe('deletion of a blog', () => {
             likes: 0
         }
 
-        const createBlogResponse = await api
+        const testBlog = await api
             .post('/api/blogs')
             .set('Authorization', `Bearer ${token}`)
             .send(newBlog)
 
-        blogToDelete = createBlogResponse.body
+        blogToDelete = testBlog.body
     })
 
     test('succeeds with status code 204 if id is valid and user is authorized', async () => {
@@ -200,22 +198,26 @@ describe('deletion of a blog', () => {
     })
 
     test('fails with status code 403 if user is not authorized to delete the blog', async () => {
-        const anotherUser = {
-            username: "anotheruser",
+        const user = {
+            username: "unauthorized",
             password: "password"
         }
-        await api.post('/api/users').send(anotherUser)
+        await api.post('/api/users').send(user)
 
-        const anotherUserLoginResponse = await api
+        const userResponse = await api
             .post('/api/login')
-            .send({ username: anotherUser.username, password: anotherUser.password })
+            .send({ username: user.username, password: user.password })
 
-        const anotherUserToken = anotherUserLoginResponse.body.token
+        const userToken = userResponse.body.token
 
         await api
             .delete(`/api/blogs/${blogToDelete.id}`)
-            .set('Authorization', `Bearer ${anotherUserToken}`)
+            .set('Authorization', `Bearer ${userToken}`)
             .expect(403)
+
+        const blogsAtEnd = await helper.blogsInDb()
+        const titles = blogsAtEnd.map(r => r.title)
+        assert(titles.includes(blogToDelete.title))
     })
 })
 
@@ -298,7 +300,7 @@ describe('deletion of a blog', () => {
       const newUser = {
         username: 'testperson',
         name: 'Superuser',
-        password: '',
+        password: 'te',
       }
   
       const result = await api
