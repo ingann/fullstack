@@ -19,24 +19,18 @@ const App = () => {
   const [notificationType, setNewType] = useState('')
 
   useEffect(() => {
-    const initializeUser = async () => {
       const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
       if (loggedUserJSON) {
         const user = JSON.parse(loggedUserJSON)
         setUser(user)
         blogService.setToken(user.token)
-    }
-  }
-    initializeUser()
+      }
   }, [])
 
   useEffect(() => {
-    const getBlogs = async () => {
       blogService.getAll().then(initialBlogs =>
         setBlogs( initialBlogs )
       )  
-    }
-    getBlogs()
   }, [])
 
   useEffect(() => {
@@ -55,16 +49,16 @@ const App = () => {
     }
     try {
     const returnedBlog = await blogService.create(blogObject)
-      setBlogs(blogs.concat(returnedBlog))
-      setNotification(`a new blog ${newTitle} by ${newAuthor} added`)
-      setNewType('success')
-      setnewTitle('')
-      setNewAuthor('')
-      setNewUrl('')
-    } catch (error) {
-      setNotification('error')
-      setNewType('error')
-    }
+        setBlogs(blogs.concat(returnedBlog))
+        setNotification(`a new blog ${newTitle} by ${newAuthor} added`)
+        setNewType('success')
+        setnewTitle('')
+        setNewAuthor('')
+        setNewUrl('')
+      } catch (error) {
+        setNotification('error')
+        setNewType('error')
+      }
   }
 
   const handleLogout = ((event) => {
