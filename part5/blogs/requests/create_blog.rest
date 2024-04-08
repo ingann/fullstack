@@ -1,11 +1,11 @@
 POST http://localhost:3003/api/blogs/ 
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InBlcnNvbiIsImlkIjoiNjYwZTk2MTBhZTZhOWI3YjM5ZjkyOThlIiwiaWF0IjoxNzEyMjM5MjY0fQ.w-cQR7-zmg46Oi1bnE-0rKOsAvBfYXCOs3xMUea3z2g
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InBlcnNvbiIsImlkIjoiNjYxM2I4ZmVmMzVhZmIzMWRkNDBlNDc4IiwiaWF0IjoxNzEyNTY4NTk0fQ.UerOE5vIM-wQoYcanJqWemDLat4xYVYnM5eW9X--kMM
 
 {
-    "title": "Cybersecurity themes",
-    "author": "Daniel Miessler",
-    "url": "https://danielmiessler.com/",
-    "likes": 3,
-    "userId": "660e9610ae6a9b7b39f9298e"
+    "title": "First class tests",
+    "author": "Robert C. Martin",
+    "url": "http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll",
+    "likes": 10,
+    "userId": "6613b8fef35afb31dd40e478"
 }

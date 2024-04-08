@@ -14,7 +14,7 @@ blogsRouter.get('/', async (request, response) => {
     const user = request.user
     const token = request.token
 
-  if (!(token && user._id)) {
+  if (!(token && user.id)) {
     return response.status(401).json({ error: "token missing or invalid" });
   }
 
