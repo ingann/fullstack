@@ -15,6 +15,7 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [notification, setNotification] = useState(null)
   const [notificationType, setNewType] = useState('')
+  const [likeClicked, setLikeClicked] = useState(false)
 
   const blogFormRef = useRef()
 
@@ -28,10 +29,11 @@ const App = () => {
   }, [])
 
   useEffect(() => {
-      blogService.getAll().then(initialBlogs =>
-        setBlogs( initialBlogs )
-      )  
-  }, [])
+      blogService.getAll().then(initialBlogs => {
+        const sortedBlogs = [...initialBlogs].sort((first, second) => second.likes - first.likes)
+        setBlogs(sortedBlogs)
+   })  
+  }, [likeClicked])
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -60,6 +62,7 @@ const App = () => {
       setBlogs(updatedBlogs)
       setNotification(`liked a ${blogObject.title}`)
       setNewType('success')
+      setLikeClicked(click => !click)
     } catch (error) {
       setNotification('something went wrong')
       setNewType('error')
