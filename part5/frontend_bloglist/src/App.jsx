@@ -53,6 +53,19 @@ const App = () => {
       }
   }
 
+  const likeBlog = async (blogId, blogObject) => {
+    try {
+      const updatedBlog = await blogService.update(blogId, blogObject)
+      const updatedBlogs = blogs.map(b => (b.id === blogId ? updatedBlog : b))
+      setBlogs(updatedBlogs)
+      setNotification(`liked a ${blogObject.title}`)
+      setNewType('success')
+    } catch (error) {
+      setNotification('something went wrong')
+      setNewType('error')
+    }
+  }
+
   const handleLogout = ((event) => {
     event.preventDefault()
     window.localStorage.removeItem('loggedBlogappUser')
@@ -100,7 +113,7 @@ const App = () => {
           <BlogForm createBlog={addBlog}/>
         </Togglable>
         {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} likeBlog={likeBlog} />
       )}
       </div>
     }  
