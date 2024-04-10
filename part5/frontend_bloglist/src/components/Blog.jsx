@@ -1,21 +1,20 @@
-import {useState} from 'react'
+import {useState, useEffect} from 'react'
 
-const Blog = ({ blog, likeBlog}) => {
+const Blog = ({ blog, likeBlog, removeBlog, user}) => {
   const [visible, setVisible] = useState(false)
+  const [authorizedUser, setAuthorizedUser] = useState(false)
 
   const hideWhenVisible = { display: visible ? 'none' : '' }
   const showWhenVisible = { display: visible ? '' : 'none' }
+  const showWhenAuthorized = {display: authorizedUser ? '': 'none'}
+
+  useEffect(() => {
+    const authUser = blog.user.username === user.username
+    setAuthorizedUser(authUser)
+  }, [user])
 
   const toggleVisibility = () => {
     setVisible(!visible)
-  }
-
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5
   }
 
   const handleLikes = (event) => {
@@ -27,6 +26,19 @@ const Blog = ({ blog, likeBlog}) => {
       likes: blog.likes + 1,
       user: blog.user.id
     })
+  }
+
+  const handleRemove = (event) => {
+    event.preventDefault()
+    removeBlog(blog)
+  }
+
+  const blogStyle = {
+    paddingTop: 10,
+    paddingLeft: 2,
+    border: 'solid',
+    borderWidth: 1,
+    marginBottom: 5
   }
   
   return (
@@ -41,6 +53,7 @@ const Blog = ({ blog, likeBlog}) => {
       <div>{blog.url}</div>
       <div>{blog.likes} <button onClick={handleLikes}>like</button></div>
       <div>{blog.user.name}</div>
+      <div style={showWhenAuthorized}><button onClick={handleRemove}>remove</button></div>
     </div>
   </div>
 )}

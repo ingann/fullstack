@@ -69,6 +69,20 @@ const App = () => {
     }
   }
 
+  const removeBlog = async (blog) => {
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
+      try {
+        await blogService.remove(blog.id)
+        setBlogs(blogs.filter(b => b.id !== blog.id))
+        setNotification(`Removed ${blog.title}`)
+        setNewType('success')
+      } catch (error) {
+        setNotification('Failed to remove the blog')
+        setNewType('error')
+      }
+    }
+  }
+
   const handleLogout = ((event) => {
     event.preventDefault()
     window.localStorage.removeItem('loggedBlogappUser')
@@ -116,7 +130,7 @@ const App = () => {
           <BlogForm createBlog={addBlog}/>
         </Togglable>
         {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} likeBlog={likeBlog} />
+        <Blog key={blog.id} blog={blog} likeBlog={likeBlog} removeBlog={removeBlog} user={user} />
       )}
       </div>
     }  
