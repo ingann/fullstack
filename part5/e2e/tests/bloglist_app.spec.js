@@ -17,15 +17,9 @@ describe('Bloglist app', () => {
   test('Login form is shown', async ({ page }) => {
     const locator = await page.getByText('log in to the application')
     await expect(locator).toBeVisible()
-
-    const usernameInput = await page.getByTestId('username');
-    await expect(usernameInput).toBeVisible();
-  
-    const passwordInput = await page.getByTestId('password');
-    await expect(passwordInput).toBeVisible();
-  
-    const loginButton = await page.getByText('login');
-    await expect(loginButton).toBeVisible();
+    await expect(page.getByTestId('username')).toBeVisible();
+    await expect(page.getByTestId('password')).toBeVisible();
+    await expect(page.getByText('login')).toBeVisible()
   })
   
 })
