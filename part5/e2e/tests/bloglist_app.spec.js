@@ -23,20 +23,21 @@ describe('Bloglist app', () => {
     await expect(page.getByText('login')).toBeVisible()
   })
 
-  test('Login', async ({ page }) => {
-    await loginWith(page, 'root', 'sekret')
-  
-    await expect(page.getByText('Superuser logged-in')).toBeVisible()
-  })
+  describe('Login', () => {
+    test('succeeds with correct credentials', async ({ page }) => {
+      await loginWith(page, 'root', 'sekret')
+    
+      await expect(page.getByText('Superuser logged-in')).toBeVisible()
+    })
 
-  test('fails with wrong credentials', async ({ page }) => {
-    await loginWith(page, 'root', 'wrong')
+    test('fails with wrong credentials', async ({ page }) => {
+      await loginWith(page, 'root', 'wrong')
 
-    const errorDiv = await page.locator('.error')
-    await expect(errorDiv).toContainText('wrong username or password')
-    await expect(errorDiv).toHaveCSS('border-style', 'solid')
-    await expect(errorDiv).toHaveCSS('color', 'rgb(255, 0, 0)')
-    await expect(page.getByText('Superuser logged-in')).not.toBeVisible()
-  })  
-  
+      const errorDiv = await page.locator('.error')
+      await expect(errorDiv).toContainText('wrong username or password')
+      await expect(errorDiv).toHaveCSS('border-style', 'solid')
+      await expect(errorDiv).toHaveCSS('color', 'rgb(255, 0, 0)')
+      await expect(page.getByText('Superuser logged-in')).not.toBeVisible()
+    }) 
+  }) 
 })
