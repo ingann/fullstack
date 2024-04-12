@@ -1,9 +1,10 @@
 const { test, expect, beforeEach, describe } = require('@playwright/test')
+const { loginWith, createBlog } = require('./helper')
 
 describe('Bloglist app', () => {
   beforeEach(async ({ page, request }) => {
-    await request.post('http:localhost:3003/api/testing/reset')
-    await request.post('http://localhost:3003/api/users', {
+    await request.post('/api/testing/reset')
+    await request.post('/api/users', {
       data: {
         name: 'Superuser',
         username: 'root',
@@ -11,7 +12,7 @@ describe('Bloglist app', () => {
       }
     })
 
-    await page.goto('http://localhost:5173')
+    await page.goto('')
   })
 
   test('Login form is shown', async ({ page }) => {
@@ -21,5 +22,21 @@ describe('Bloglist app', () => {
     await expect(page.getByTestId('password')).toBeVisible();
     await expect(page.getByText('login')).toBeVisible()
   })
+
+  test('Login', async ({ page }) => {
+    await loginWith(page, 'root', 'sekret')
+  
+    await expect(page.getByText('Superuser logged-in')).toBeVisible()
+  })
+
+  test('fails with wrong credentials', async ({ page }) => {
+    await loginWith(page, 'root', 'wrong')
+
+    const errorDiv = await page.locator('.error')
+    await expect(errorDiv).toContainText('wrong username or password')
+    await expect(errorDiv).toHaveCSS('border-style', 'solid')
+    await expect(errorDiv).toHaveCSS('color', 'rgb(255, 0, 0)')
+    await expect(page.getByText('Superuser logged-in')).not.toBeVisible()
+  })  
   
 })
