@@ -39,5 +39,15 @@ describe('Bloglist app', () => {
       await expect(errorDiv).toHaveCSS('color', 'rgb(255, 0, 0)')
       await expect(page.getByText('Superuser logged-in')).not.toBeVisible()
     }) 
-  }) 
+  })
+  describe('When logged in', () => {
+    beforeEach(async ({ page }) => {
+      await loginWith(page, 'root', 'sekret')
+    })
+  
+    test('a new blog can be created', async ({ page }) => {
+      await createBlog(page, 'a blog created by playwright', 'author', 'url')
+      await expect(page.getByTestId('defaultview')).toBeVisible()
+    })
+  })
 })
