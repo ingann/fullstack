@@ -49,5 +49,11 @@ describe('Bloglist app', () => {
       await createBlog(page, 'a blog created by playwright', 'author', 'url')
       await expect(page.getByTestId('defaultview')).toBeVisible()
     })
+    test('a blog can be edited', async ({ page }) => {
+      await createBlog(page, 'a blog created by playwright', 'author', 'url')
+      await page.getByRole('button', { name: 'view' }).click()
+      await page.getByRole('button', { name: 'like' }).click()
+      await expect(page.getByText('1 like')).toBeVisible()
+    })
   })
 })
