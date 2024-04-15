@@ -26,17 +26,16 @@ describe('Bloglist app', () => {
   describe('Login', () => {
     test('succeeds with correct credentials', async ({ page }) => {
       await loginWith(page, 'root', 'sekret')
-    
       await expect(page.getByText('Superuser logged-in')).toBeVisible()
     })
 
     test('fails with wrong credentials', async ({ page }) => {
       await loginWith(page, 'root', 'wrong')
 
-      const errorDiv = await page.locator('.error')
-      await expect(errorDiv).toContainText('wrong username or password')
-      await expect(errorDiv).toHaveCSS('border-style', 'solid')
-      await expect(errorDiv).toHaveCSS('color', 'rgb(255, 0, 0)')
+      const notification = await page.locator('.error')
+      await expect(notification).toContainText('wrong username or password')
+      await expect(notification).toHaveCSS('border-style', 'solid')
+      await expect(notification).toHaveCSS('color', 'rgb(255, 0, 0)')
       await expect(page.getByText('Superuser logged-in')).not.toBeVisible()
     }) 
   })
@@ -54,6 +53,23 @@ describe('Bloglist app', () => {
       await page.getByRole('button', { name: 'view' }).click()
       await page.getByRole('button', { name: 'like' }).click()
       await expect(page.getByText('1 like')).toBeVisible()
+    })
+  })
+  describe('Deletion of a blog', () => {
+    beforeEach(async ({ page }) => {
+      await loginWith(page, 'root', 'sekret')
+      await createBlog(page, 'a blog created by playwright', 'author', 'url')
+    })
+  
+    test('user who added the blog can remove the blog', async({ page }) => {
+      page.on('dialog', async dialog => {
+        expect(dialog.message()).toContain('Remove blog')
+        await dialog.accept()
+      })
+      await page.getByRole('button', { name: 'view' }).click()
+      await page.getByRole('button', { name: 'remove' }).click()
+
+      await expect(page.getByTestId('clicked')).not.toBeVisible()
     })
   })
 })

@@ -12,6 +12,7 @@ const loginWith = async (page, username, password)  => {
     await textboxes[2].fill(url)
     await page.getByRole('button', { name: 'Create' }).click()
     await page.getByTestId('defaultview').waitFor()
+    
   }
   
   export { loginWith, createBlog }

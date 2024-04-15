@@ -18,13 +18,13 @@ blogsRouter.get('/', async (request, response) => {
     return response.status(401).json({ error: "token missing or invalid" });
   }
 
-    const blog = new Blog({
+    const blog = await new Blog({
       title: body.title,
       author: body.author,
       url: body.url,
       likes: body.likes !== undefined ? body.likes: 0,
       user: user.id
-    })
+    }).populate('user', {username: 1, name: 1 })
   
     const savedBlog = await blog.save()
     user.blogs = user.blogs.concat(savedBlog._id)
