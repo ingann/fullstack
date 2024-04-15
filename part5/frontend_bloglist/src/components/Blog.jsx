@@ -45,7 +45,7 @@ const Blog = ({ blog, likeBlog, removeBlog, user }) => {
     <div style={blogStyle}>
       <div style={hideWhenVisible} data-testid="default">
         <span data-testid="defaultview">{blog.title} {blog.author}</span>
-        <button onClick={toggleVisibility}>view</button>
+        <button onClick={toggleVisibility} data-testid={blog.title}>view</button>
       </div>
       <div style={showWhenVisible} data-testid="clicked">
         {blog.title} {blog.author}

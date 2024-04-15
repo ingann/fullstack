@@ -1,5 +1,5 @@
 const { test, expect, beforeEach, describe } = require('@playwright/test')
-const { loginWith, createBlog } = require('./helper')
+const { loginWith, createBlog, likeBlog } = require('./helper')
 
 describe('Bloglist app', () => {
   beforeEach(async ({ page, request }) => {
@@ -84,9 +84,28 @@ describe('Bloglist app', () => {
       await loginWith(page, 'person', 'secret')
       await page.getByRole('button', { name: 'view' }).click()
       await expect(page.getByRole('button', { name: 'remove' })).not.toBeVisible()
-
-
-
+    })
+  })
+  describe('Blogs are sorted by likes', () => {
+    beforeEach(async ({ page }) => {
+      await loginWith(page, 'root', 'sekret')
+    })
+    test('blogs are arranged in descending order', async({ page }) => {
+      await createBlog(page, 'first', 'firstauthor', 'firsturl')
+      await createBlog(page, 'second', 'secondauthor', 'secondurl')
+      await createBlog(page, 'third', 'thirdauthor', 'thirdurl')
+      
+      await likeBlog(page, 'first')
+      await likeBlog(page, 'first')
+      await likeBlog(page, 'second')
+      await likeBlog(page, 'third')
+      await likeBlog(page, 'third')
+      await likeBlog(page, 'third')
+      await likeBlog(page, 'third')
+      const blogs = await page.getByTestId('defaultview').all()
+      expect(blogs[0]).toHaveText('third thirdauthor')
+      expect(blogs[1]).toHaveText('first firstauthor')
+      expect(blogs[2]).toHaveText('second secondauthor')
     })
   })
 })
