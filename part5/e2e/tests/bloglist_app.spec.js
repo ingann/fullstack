@@ -56,7 +56,14 @@ describe('Bloglist app', () => {
     })
   })
   describe('Deletion of a blog', () => {
-    beforeEach(async ({ page }) => {
+    beforeEach(async ({ page, request }) => {
+      await request.post('/api/users', {
+        data: {
+          name: 'User',
+          username: 'person',
+          password: 'secret'
+        }
+      })
       await loginWith(page, 'root', 'sekret')
       await createBlog(page, 'a blog created by playwright', 'author', 'url')
     })
@@ -70,6 +77,16 @@ describe('Bloglist app', () => {
       await page.getByRole('button', { name: 'remove' }).click()
 
       await expect(page.getByTestId('clicked')).not.toBeVisible()
+    })
+
+    test('unauthorized user is not able to see the remove button', async({ page }) => {
+      await page.getByRole('button', { name: 'logout' }).click()
+      await loginWith(page, 'person', 'secret')
+      await page.getByRole('button', { name: 'view' }).click()
+      await expect(page.getByRole('button', { name: 'remove' })).not.toBeVisible()
+
+
+
     })
   })
 })
